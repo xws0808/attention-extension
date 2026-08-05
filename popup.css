@@ -79,3 +79,34 @@ body {
   text-align: center;
   margin-top: 4px;
 }
+
+#snooze-status {
+  font-size: 12px;
+  margin-bottom: 8px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.snooze-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+.snooze-buttons button, #resume-btn {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: white;
+  padding: 8px 6px;
+  border-radius: 6px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.snooze-buttons button:hover, #resume-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+#resume-btn {
+  width: 100%;
+  margin-top: 6px;
+}

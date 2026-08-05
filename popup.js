@@ -8,6 +8,7 @@ async function loadDashboard() {
   renderTarget(sessions);
   renderTodaySessions(sessions);
   renderWeeklyChart(sessions);
+  renderSnoozeStatus();
 }
 
 function getDateString(timestamp) {
@@ -65,7 +66,7 @@ function renderWeeklyChart(sessions) {
 
   const maxWatch = Math.max(
     ...sessions.map(s => s.watchedSeconds),
-    30 // avoid a zero-height chart on empty data
+    30
   );
 
   days.forEach((day) => {
@@ -101,5 +102,53 @@ function renderWeeklyChart(sessions) {
     chart.appendChild(barWrapper);
   });
 }
+
+async function renderSnoozeStatus() {
+  const result = await chrome.storage.local.get(["snooze"]);
+  const snooze = result.snooze;
+
+  const statusEl = document.getElementById("snooze-status");
+  const buttonsEl = document.querySelector(".snooze-buttons");
+  const resumeBtn = document.getElementById("resume-btn");
+
+  const isActive = snooze && snooze.until && snooze.until > Date.now();
+
+  if (isActive) {
+    const minsLeft = Math.ceil((snooze.until - Date.now()) / 60000);
+    statusEl.textContent = snooze.type === "video"
+      ? "Snoozed for this video"
+      : `Snoozed, ${minsLeft} min left`;
+    buttonsEl.style.display = "none";
+    resumeBtn.style.display = "block";
+  } else {
+    statusEl.textContent = "Active";
+    buttonsEl.style.display = "flex";
+    resumeBtn.style.display = "none";
+  }
+}
+
+async function setSnooze(type) {
+  let until;
+  if (type === "video") {
+    until = Date.now() + 1000 * 60 * 60 * 6; // safety-net cap of 6hrs
+  } else {
+    until = Date.now() + 1000 * 60 * 60; // 1 hour
+  }
+
+  await chrome.storage.local.set({
+    snooze: { type: type, until: until }
+  });
+
+  renderSnoozeStatus();
+}
+
+async function clearSnooze() {
+  await chrome.storage.local.set({ snooze: null });
+  renderSnoozeStatus();
+}
+
+document.getElementById("snooze-video-btn").addEventListener("click", () => setSnooze("video"));
+document.getElementById("snooze-hour-btn").addEventListener("click", () => setSnooze("time"));
+document.getElementById("resume-btn").addEventListener("click", clearSnooze);
 
 loadDashboard();

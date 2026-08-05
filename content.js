@@ -1,3 +1,5 @@
+// Focus Coach - content script
+
 console.log("Focus Coach: content script loaded");
 
 let watchStartTime = null;
@@ -24,6 +26,12 @@ function findVideoElement() {
 function setPlaybackRate(video, rate) {
   programmaticChange = true;
   video.playbackRate = rate;
+}
+
+async function isSnoozed() {
+  const result = await chrome.storage.local.get(["snooze"]);
+  const snooze = result.snooze;
+  return snooze && snooze.until && snooze.until > Date.now();
 }
 
 function createOverlay() {
@@ -132,11 +140,12 @@ function hideNudge() {
   if (nudge) nudge.style.display = "none";
 }
 
-function handlePotentialSkipClick(event) {
+async function handlePotentialSkipClick(event) {
   const link = event.target.closest('a[href*="/watch?v="]');
   if (!link) return;
 
   if (nudgeActive) return;
+  if (await isSnoozed()) return;
 
   const remaining = TARGET_SECONDS - currentElapsedSeconds;
   if (remaining <= 0) return;
@@ -163,15 +172,24 @@ function waitForVideo() {
   }
 }
 
-function startWatchSession() {
+async function startWatchSession() {
   watchStartTime = Date.now();
   currentVideoId = getVideoIdFromUrl();
   console.log("Focus Coach: watch session started for video", currentVideoId);
 
-  ringInterval = setInterval(() => {
-    const elapsed = Math.round((Date.now() - watchStartTime) / 1000);
-    updateRing(elapsed);
-  }, 250);
+  const snoozed = await isSnoozed();
+  const overlay = document.getElementById("focus-coach-overlay");
+
+  if (snoozed) {
+    console.log("Focus Coach: training snoozed, tracking silently");
+    if (overlay) overlay.style.display = "none";
+  } else {
+    if (overlay) overlay.style.display = "flex";
+    ringInterval = setInterval(() => {
+      const elapsed = Math.round((Date.now() - watchStartTime) / 1000);
+      updateRing(elapsed);
+    }, 250);
+  }
 }
 
 function endWatchSession(reason) {
@@ -180,7 +198,6 @@ function endWatchSession(reason) {
   const watchedSeconds = Math.round((Date.now() - watchStartTime) / 1000);
   console.log(`Focus Coach: watch session ended (${reason}), duration: ${watchedSeconds}s`);
 
-  // send this session to background.js for permanent storage
   chrome.runtime.sendMessage({
     type: "SESSION_ENDED",
     videoId: currentVideoId,
@@ -208,12 +225,14 @@ function attachListeners(video) {
     endWatchSession("video ended");
   });
 
-  video.addEventListener("ratechange", () => {
+  video.addEventListener("ratechange", async () => {
     if (programmaticChange) {
       programmaticChange = false;
       console.log("Focus Coach: ignoring our own programmatic rate change");
       return;
     }
+
+    if (await isSnoozed()) return;
 
     console.log("Focus Coach: ratechange fired, current rate is now:", video.playbackRate, "| nudgeActive:", nudgeActive);
 
