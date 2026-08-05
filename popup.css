@@ -1,0 +1,81 @@
+body {
+  width: 300px;
+  padding: 16px;
+  font-family: Arial, sans-serif;
+  background: #1a1a1a;
+  color: white;
+  margin: 0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.header h1 {
+  font-size: 16px;
+  margin: 0;
+}
+
+#level-badge {
+  background: #5865F2;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.stat-box {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 12px 8px;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.stat-label {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 2px;
+}
+
+.section h2 {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 8px;
+}
+
+#weekly-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 80px;
+}
+
+.day-bar {
+  flex: 1;
+  background: #5865F2;
+  border-radius: 3px 3px 0 0;
+  min-height: 2px;
+  position: relative;
+}
+
+.day-label {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  margin-top: 4px;
+}

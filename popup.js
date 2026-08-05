@@ -1,0 +1,105 @@
+console.log("Focus Coach: popup opened");
+
+async function loadDashboard() {
+  const result = await chrome.storage.local.get(["sessions"]);
+  const sessions = result.sessions || [];
+
+  renderStreak(sessions);
+  renderTarget(sessions);
+  renderTodaySessions(sessions);
+  renderWeeklyChart(sessions);
+}
+
+function getDateString(timestamp) {
+  return new Date(timestamp).toDateString();
+}
+
+function renderStreak(sessions) {
+  const hitDates = new Set(
+    sessions.filter(s => s.hitTarget).map(s => getDateString(s.timestamp))
+  );
+
+  let streak = 0;
+  let checkDate = new Date();
+
+  while (hitDates.has(checkDate.toDateString())) {
+    streak++;
+    checkDate.setDate(checkDate.getDate() - 1);
+  }
+
+  document.getElementById("streak-value").textContent = streak;
+}
+
+function renderTarget(sessions) {
+  if (sessions.length === 0) {
+    document.getElementById("target-value").textContent = "60s";
+    document.getElementById("level-badge").textContent = "Level 1";
+    return;
+  }
+
+  const lastSession = sessions[sessions.length - 1];
+  const target = lastSession.targetSeconds;
+
+  document.getElementById("target-value").textContent = `${target}s`;
+
+  const level = Math.max(1, Math.floor(target / 30) + 1);
+  document.getElementById("level-badge").textContent = `Level ${level}`;
+}
+
+function renderTodaySessions(sessions) {
+  const today = new Date().toDateString();
+  const todayCount = sessions.filter(s => getDateString(s.timestamp) === today).length;
+  document.getElementById("today-sessions").textContent = todayCount;
+}
+
+function renderWeeklyChart(sessions) {
+  const chart = document.getElementById("weekly-chart");
+  chart.innerHTML = "";
+
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    days.push(d);
+  }
+
+  const maxWatch = Math.max(
+    ...sessions.map(s => s.watchedSeconds),
+    30 // avoid a zero-height chart on empty data
+  );
+
+  days.forEach((day) => {
+    const dayStr = day.toDateString();
+    const daySessions = sessions.filter(s => getDateString(s.timestamp) === dayStr);
+    const totalSeconds = daySessions.reduce((sum, s) => sum + s.watchedSeconds, 0);
+    const avgSeconds = daySessions.length > 0 ? totalSeconds / daySessions.length : 0;
+
+    const barWrapper = document.createElement("div");
+    barWrapper.style.display = "flex";
+    barWrapper.style.flexDirection = "column";
+    barWrapper.style.flex = "1";
+    barWrapper.style.alignItems = "center";
+
+    const bar = document.createElement("div");
+    bar.className = "day-bar";
+    const heightPercent = Math.max((avgSeconds / maxWatch) * 100, 2);
+    bar.style.height = `${heightPercent}%`;
+
+    const label = document.createElement("div");
+    label.className = "day-label";
+    label.textContent = day.toLocaleDateString("en-US", { weekday: "narrow" });
+
+    const barContainer = document.createElement("div");
+    barContainer.style.flex = "1";
+    barContainer.style.width = "100%";
+    barContainer.style.display = "flex";
+    barContainer.style.alignItems = "flex-end";
+    barContainer.appendChild(bar);
+
+    barWrapper.appendChild(barContainer);
+    barWrapper.appendChild(label);
+    chart.appendChild(barWrapper);
+  });
+}
+
+loadDashboard();

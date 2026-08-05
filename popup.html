@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="header">
+    <h1>Focus Coach</h1>
+    <div id="level-badge">Level 1</div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-box">
+      <div class="stat-value" id="streak-value">0</div>
+      <div class="stat-label">day streak</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value" id="target-value">--</div>
+      <div class="stat-label">current target</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value" id="today-sessions">0</div>
+      <div class="stat-label">sessions today</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Last 7 Days</h2>
+    <div id="weekly-chart"></div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

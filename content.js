@@ -10,7 +10,7 @@ let nudgeTimeout = null;
 let programmaticChange = false;
 let pendingNavigationUrl = null;
 
-const TARGET_SECONDS = 60; // temporary fixed target, will become dynamic later
+let TARGET_SECONDS = 60;
 
 function getVideoIdFromUrl() {
   const params = new URLSearchParams(window.location.search);
@@ -239,6 +239,16 @@ setInterval(() => {
   }
 }, 1000);
 
+function fetchTarget() {
+  chrome.runtime.sendMessage({ type: "GET_TARGET" }, (response) => {
+    if (response && response.target) {
+      TARGET_SECONDS = response.target;
+      console.log("Focus Coach: today's target set to", TARGET_SECONDS, "seconds");
+    }
+  });
+}
+
 document.addEventListener("click", handlePotentialSkipClick, true);
 
+fetchTarget();
 waitForVideo();
