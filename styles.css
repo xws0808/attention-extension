@@ -1,0 +1,66 @@
+#focus-coach-overlay {
+  position: fixed;
+  top: 80px;
+  left: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 12px;
+  padding: 8px;
+  font-family: Arial, sans-serif;
+}
+
+.fc-ring-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.2);
+  stroke-width: 4;
+}
+
+.fc-ring-progress {
+  fill: none;
+  stroke: #5865F2;
+  stroke-width: 4;
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: 24px 24px;
+  transition: stroke-dashoffset 0.25s linear;
+}
+
+#fc-time-label {
+  color: white;
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+#focus-coach-nudge {
+  position: fixed;
+  top: 140px;
+  left: 24px;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  align-items: center;
+  gap: 10px;
+  max-width: 220px;
+}
+
+#fc-nudge-confirm {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+#fc-nudge-confirm:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
