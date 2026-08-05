@@ -1,7 +1,12 @@
-// Focus Coach - content script
-// This runs inside every youtube.com page
-
 console.log("Focus Coach: content script loaded");
+
+let watchStartTime = null;
+let currentVideoId = null;
+
+function getVideoIdFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("v");
+}
 
 function findVideoElement() {
   return document.querySelector("video");
@@ -18,17 +23,42 @@ function waitForVideo() {
   }
 }
 
+function startWatchSession() {
+  watchStartTime = Date.now();
+  currentVideoId = getVideoIdFromUrl();
+  console.log("Focus Coach: watch session started for video", currentVideoId);
+}
+
+function endWatchSession(reason) {
+  if (watchStartTime === null) return;
+
+  const watchedSeconds = Math.round((Date.now() - watchStartTime) / 1000);
+  console.log(`Focus Coach: watch session ended (${reason}), duration: ${watchedSeconds}s`);
+
+  watchStartTime = null;
+}
+
 function attachListeners(video) {
   video.addEventListener("play", () => {
-    console.log("Focus Coach: video started playing");
+    startWatchSession();
   });
 
   video.addEventListener("pause", () => {
-    console.log("Focus Coach: video paused");
+    endWatchSession("paused");
   });
 
-  video.addEventListener("timeupdate", () => {
+  video.addEventListener("ended", () => {
+    endWatchSession("video ended");
   });
 }
+
+let lastUrl = window.location.href;
+setInterval(() => {
+  if (window.location.href !== lastUrl) {
+    console.log("Focus Coach: navigated to new page/video");
+    endWatchSession("navigated away");
+    lastUrl = window.location.href;
+  }
+}, 1000);
 
 waitForVideo();
