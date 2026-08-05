@@ -8,6 +8,7 @@ let nudgeActive = false;
 let pendingRate = null;
 let nudgeTimeout = null;
 let programmaticChange = false;
+let pendingNavigationUrl = null;
 
 const TARGET_SECONDS = 60; // temporary fixed target, will become dynamic later
 
@@ -94,18 +95,59 @@ function showNudge(secondsRemaining, requestedRate, video) {
   }, 2000);
 }
 
+function showSkipNudge(secondsRemaining) {
+  nudgeActive = true;
+
+  const nudge = document.getElementById("focus-coach-nudge");
+  const text = document.getElementById("fc-nudge-text");
+  text.textContent = `${secondsRemaining}s from your target, hang in there`;
+  nudge.style.display = "flex";
+
+  nudgeTimeout = setTimeout(() => {
+    console.log("Focus Coach: skip timeout fired, navigating now");
+    window.location.href = pendingNavigationUrl;
+  }, 2000);
+}
+
 function confirmNudge() {
-  const video = findVideoElement();
-  console.log("Focus Coach: confirm clicked, attempting to set rate to:", pendingRate);
   clearTimeout(nudgeTimeout);
-  setPlaybackRate(video, pendingRate);
+
+  if (pendingNavigationUrl) {
+    console.log("Focus Coach: confirm clicked, navigating now");
+    window.location.href = pendingNavigationUrl;
+    pendingNavigationUrl = null;
+  } else if (pendingRate) {
+    const video = findVideoElement();
+    console.log("Focus Coach: confirm clicked, attempting to set rate to:", pendingRate);
+    setPlaybackRate(video, pendingRate);
+  }
+
   hideNudge();
 }
 
 function hideNudge() {
   nudgeActive = false;
+  pendingNavigationUrl = null;
   const nudge = document.getElementById("focus-coach-nudge");
   if (nudge) nudge.style.display = "none";
+}
+
+function handlePotentialSkipClick(event) {
+  const link = event.target.closest('a[href*="/watch?v="]');
+  if (!link) return;
+
+  if (nudgeActive) return;
+
+  const remaining = TARGET_SECONDS - currentElapsedSeconds;
+  if (remaining <= 0) return;
+
+  console.log("Focus Coach: early skip attempt detected, remaining:", remaining);
+
+  event.preventDefault();
+  event.stopPropagation();
+
+  pendingNavigationUrl = link.href;
+  showSkipNudge(remaining);
 }
 
 function waitForVideo() {
@@ -185,5 +227,7 @@ setInterval(() => {
     lastUrl = window.location.href;
   }
 }, 1000);
+
+document.addEventListener("click", handlePotentialSkipClick, true);
 
 waitForVideo();
