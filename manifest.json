@@ -4,6 +4,9 @@
   "version": "1.0",
   "description": "Trains sustained attention while you watch YouTube, using your own viewing behavior to set progressively increasing focus targets.",
   "permissions": ["storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
     {
       "matches": ["*://www.youtube.com/*"],

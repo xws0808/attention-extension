@@ -180,6 +180,17 @@ function endWatchSession(reason) {
   const watchedSeconds = Math.round((Date.now() - watchStartTime) / 1000);
   console.log(`Focus Coach: watch session ended (${reason}), duration: ${watchedSeconds}s`);
 
+  // send this session to background.js for permanent storage
+  chrome.runtime.sendMessage({
+    type: "SESSION_ENDED",
+    videoId: currentVideoId,
+    watchedSeconds: watchedSeconds,
+    targetSeconds: TARGET_SECONDS,
+    hitTarget: watchedSeconds >= TARGET_SECONDS,
+    reason: reason,
+    timestamp: Date.now()
+  });
+
   clearInterval(ringInterval);
   watchStartTime = null;
 }
