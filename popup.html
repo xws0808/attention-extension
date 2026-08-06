@@ -5,39 +5,61 @@
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-  <div class="header">
-    <h1>Focus Coach</h1>
-    <div id="level-badge">Level 1</div>
+
+  <div id="setup-screen">
+    <h1 style="font-size:15px; margin-bottom:4px;">Set your starting target</h1>
+    <p style="font-size:11px; color:rgba(255,255,255,0.55); margin-bottom:14px;">This is your first focus goal. It'll increase gradually from here.</p>
+
+    <button class="setup-option" data-target="30">
+        <strong>Train with short-form</strong>
+        <span>Shorts, Reels-style content</span>
+    </button>
+    <button class="setup-option" data-target="120">
+        <strong>Train with long-form</strong>
+        <span>Regular videos, tutorials, podcasts</span>
+    </button>
+
+    <div style="margin-top:10px;">
+      <input type="number" id="custom-target-input" placeholder="Custom (seconds)" />
+      <button id="custom-target-btn">Set</button>
+    </div>
   </div>
 
-  <div class="stats-grid">
-    <div class="stat-box">
-      <div class="stat-value" id="streak-value">0</div>
-      <div class="stat-label">day streak</div>
+  <div id="main-dashboard" style="display:none;">
+    <div class="header">
+      <h1>Focus Coach</h1>
+      <div id="level-badge">Level 1</div>
     </div>
-    <div class="stat-box">
-      <div class="stat-value" id="target-value">--</div>
-      <div class="stat-label">current target</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-value" id="today-sessions">0</div>
-      <div class="stat-label">sessions today</div>
-    </div>
-  </div>
 
-  <div class="section">
-    <h2>Training Status</h2>
-    <div id="snooze-status">Active</div>
-    <div class="snooze-buttons">
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-value" id="streak-value">0</div>
+        <div class="stat-label">day streak</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="target-value">--</div>
+        <div class="stat-label">current target</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="today-sessions">0</div>
+        <div class="stat-label">sessions today</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Training Status</h2>
+      <div id="snooze-status">Active</div>
+      <div class="snooze-buttons">
         <button id="snooze-video-btn">Snooze this video</button>
         <button id="snooze-hour-btn">Snooze 1 hour</button>
+      </div>
+      <button id="resume-btn" style="display:none;">Resume training</button>
     </div>
-    <button id="resume-btn" style="display:none;">Resume training</button>
-  </div>
 
-  <div class="section">
-    <h2>Last 7 Days</h2>
-    <div id="weekly-chart"></div>
+    <div class="section">
+      <h2>Last 7 Days</h2>
+      <div id="weekly-chart"></div>
+    </div>
   </div>
 
   <script src="popup.js"></script>

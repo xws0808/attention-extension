@@ -1,5 +1,36 @@
 console.log("Focus Coach: popup opened");
 
+async function checkSetup() {
+  const result = await chrome.storage.local.get(["initialTarget"]);
+
+  if (result.initialTarget) {
+    document.getElementById("setup-screen").style.display = "none";
+    document.getElementById("main-dashboard").style.display = "block";
+    loadDashboard();
+  } else {
+    document.getElementById("setup-screen").style.display = "block";
+    document.getElementById("main-dashboard").style.display = "none";
+  }
+}
+
+async function setInitialTarget(seconds) {
+  await chrome.storage.local.set({ initialTarget: seconds });
+  checkSetup();
+}
+
+document.querySelectorAll(".setup-option").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    setInitialTarget(parseInt(btn.dataset.target));
+  });
+});
+
+document.getElementById("custom-target-btn").addEventListener("click", () => {
+  const val = parseInt(document.getElementById("custom-target-input").value);
+  if (val && val > 0) {
+    setInitialTarget(val);
+  }
+});
+
 async function loadDashboard() {
   const result = await chrome.storage.local.get(["sessions"]);
   const sessions = result.sessions || [];
@@ -31,9 +62,11 @@ function renderStreak(sessions) {
   document.getElementById("streak-value").textContent = streak;
 }
 
-function renderTarget(sessions) {
+async function renderTarget(sessions) {
   if (sessions.length === 0) {
-    document.getElementById("target-value").textContent = "60s";
+    const result = await chrome.storage.local.get(["initialTarget"]);
+    const initial = result.initialTarget || 30;
+    document.getElementById("target-value").textContent = `${initial}s`;
     document.getElementById("level-badge").textContent = "Level 1";
     return;
   }
@@ -130,9 +163,9 @@ async function renderSnoozeStatus() {
 async function setSnooze(type) {
   let until;
   if (type === "video") {
-    until = Date.now() + 1000 * 60 * 60 * 6; // safety-net cap of 6hrs
+    until = Date.now() + 1000 * 60 * 60 * 6;
   } else {
-    until = Date.now() + 1000 * 60 * 60; // 1 hour
+    until = Date.now() + 1000 * 60 * 60;
   }
 
   await chrome.storage.local.set({
@@ -151,4 +184,4 @@ document.getElementById("snooze-video-btn").addEventListener("click", () => setS
 document.getElementById("snooze-hour-btn").addEventListener("click", () => setSnooze("time"));
 document.getElementById("resume-btn").addEventListener("click", clearSnooze);
 
-loadDashboard();
+checkSetup();
