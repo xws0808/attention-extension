@@ -3,7 +3,7 @@
 ## Overview
 This is Phase 2 of a two part project. Phase 1 was a SQL based research investigation into why attention spans while watching short form and online video appear to be shrinking. My research pointed to a clear, specific root cause: platform interface mechanics, especially autoplay and algorithmic momentum, drive skip and disengagement behavior more than content length or category does. Phase 2 is a Chrome extension that acts directly on that finding. Rather than blocking or restricting YouTube, it trains sustained attention through a gamified, progressively increasing focus target, the same progressive overload principle used in fitness training, applied here to attention instead of muscle.
 
-Research repo: [\[link to Phase 1 repo\]](https://github.com/xws0808/attention-span-sql-project)
+Research repo: [\[Phase 1 repo\]](https://github.com/xws0808/attention-span-sql-project)
 
 ## The Core Idea
 Most focus tools either block access entirely or passively track usage. Neither actually trains anything. Focus Coach instead sets a personal focus target based on your own recent viewing behavior, shows a small progress ring while you watch, and gently interrupts, never blocks, early skips or speed changes with a two second pause and nudge. Hit your target enough and the target itself increases, mirroring how a training plan gradually raises the bar as you improve.
