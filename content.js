@@ -9,6 +9,7 @@ let pendingRate = null;
 let nudgeTimeout = null;
 let programmaticChange = false;
 let pendingNavigationUrl = null;
+let targetCelebrated = false;
 
 let TARGET_SECONDS = 60;
 
@@ -56,11 +57,28 @@ function createOverlay() {
   const overlay = document.createElement("div");
   overlay.id = "focus-coach-overlay";
   overlay.innerHTML = `
-    <svg width="48" height="48" viewBox="0 0 48 48">
-      <circle cx="24" cy="24" r="20" class="fc-ring-bg" />
-      <circle cx="24" cy="24" r="20" class="fc-ring-progress" id="fc-ring-progress" />
-    </svg>
-    <div id="fc-time-label">0:00</div>
+    <div id="fc-ring-view" style="display:flex; flex-direction:column; align-items:center;">
+      <svg width="48" height="48" viewBox="0 0 48 48">
+        <circle cx="24" cy="24" r="20" class="fc-ring-bg" />
+        <circle cx="24" cy="24" r="20" class="fc-ring-progress" id="fc-ring-progress" />
+      </svg>
+      <div id="fc-time-label">0:00</div>
+    </div>
+    <div id="fc-goat-view">
+      <svg width="48" height="48" viewBox="0 0 48 48">
+        <circle cx="24" cy="24" r="20" fill="#122016" stroke="#22c55e" stroke-width="4"/>
+        <path d="M17 17 Q14 13 16 10 Q19 13 19 17 Z" fill="#dcdcd2"/>
+        <path d="M31 17 Q34 13 32 10 Q29 13 29 17 Z" fill="#dcdcd2"/>
+        <ellipse cx="24" cy="24" rx="10" ry="9" fill="#f2f2ea"/>
+        <path d="M14 21 Q10 24 13 28 Q15 25 15.5 22 Z" fill="#dcdcd2"/>
+        <path d="M34 21 Q38 24 35 28 Q33 25 32.5 22 Z" fill="#dcdcd2"/>
+        <circle cx="20" cy="23" r="1.5" fill="#2c2c2a"/>
+        <circle cx="28" cy="23" r="1.5" fill="#2c2c2a"/>
+        <path d="M22 28 Q24 29.5 26 28" stroke="#b0b0a6" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+        <path d="M23 31 L22 34.5 Q24 36 26 34.5 L25 31 Z" fill="#dcdcd2"/>
+      </svg>
+      <div id="fc-goat-label">GOAT!</div>
+    </div>
   `;
   document.body.appendChild(overlay);
   console.log("Focus Coach: overlay created");
@@ -97,9 +115,33 @@ function updateRing(elapsedSeconds) {
   progressCircle.style.strokeDasharray = circumference;
   progressCircle.style.strokeDashoffset = offset;
 
+  if (elapsedSeconds >= TARGET_SECONDS) {
+    progressCircle.classList.add("fc-complete");
+    triggerGoatCelebration();
+  } else {
+    progressCircle.classList.remove("fc-complete");
+  }
+
   const mins = Math.floor(elapsedSeconds / 60);
   const secs = elapsedSeconds % 60;
   label.textContent = `${mins}:${secs.toString().padStart(2, "0")}`;
+}
+
+function triggerGoatCelebration() {
+  if (targetCelebrated) return;
+  targetCelebrated = true;
+
+  const ringView = document.getElementById("fc-ring-view");
+  const goatView = document.getElementById("fc-goat-view");
+  if (!ringView || !goatView) return;
+
+  ringView.style.display = "none";
+  goatView.style.display = "flex";
+
+  setTimeout(() => {
+    goatView.style.display = "none";
+    ringView.style.display = "flex";
+  }, 2500);
 }
 
 function showNudge(secondsRemaining, requestedRate, video) {
@@ -191,6 +233,7 @@ function waitForVideo() {
 async function startWatchSession() {
   watchStartTime = Date.now();
   currentVideoId = getVideoIdFromUrl();
+  targetCelebrated = false;
   console.log("Focus Coach: watch session started for video", currentVideoId);
 
   const snoozed = await isSnoozed();

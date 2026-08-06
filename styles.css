@@ -6,21 +6,28 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgba(0, 0, 0, 0.6);
-  border-radius: 12px;
-  padding: 8px;
-  font-family: Arial, sans-serif;
+  background: rgba(18, 24, 18, 0.85);
+  backdrop-filter: blur(8px);
+  border-radius: 16px;
+  padding: 10px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease;
+}
+
+#focus-coach-overlay:hover {
+  transform: scale(1.05);
 }
 
 .fc-ring-bg {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.2);
+  stroke: rgba(255, 255, 255, 0.15);
   stroke-width: 4;
 }
 
 .fc-ring-progress {
   fill: none;
-  stroke: #5865F2;
+  stroke: #22c55e;
   stroke-width: 4;
   stroke-linecap: round;
   transform: rotate(-90deg);
@@ -31,36 +38,63 @@
 #fc-time-label {
   color: white;
   font-size: 11px;
-  margin-top: 2px;
+  font-weight: 600;
+  margin-top: 4px;
+  letter-spacing: 0.3px;
+}
+
+#fc-goat-view {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+}
+
+#fc-goat-label {
+  color: #22c55e;
+  font-size: 10px;
+  font-weight: 700;
+  margin-top: 4px;
+  letter-spacing: 0.5px;
 }
 
 #focus-coach-nudge {
   position: fixed;
-  top: 140px;
+  top: 150px;
   left: 24px;
   z-index: 9999;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(18, 24, 18, 0.92);
+  backdrop-filter: blur(8px);
   color: white;
-  padding: 10px 14px;
-  border-radius: 10px;
-  font-family: Arial, sans-serif;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
   font-size: 13px;
   align-items: center;
   gap: 10px;
   max-width: 220px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  border-left: 3px solid #22c55e;
+  animation: fc-slide-in 0.2s ease;
+}
+
+@keyframes fc-slide-in {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
 #fc-nudge-confirm {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.12);
   border: none;
   color: white;
-  padding: 4px 8px;
-  border-radius: 6px;
+  padding: 5px 10px;
+  border-radius: 8px;
   font-size: 11px;
+  font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
+  transition: background 0.15s ease;
 }
 
 #fc-nudge-confirm:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.25);
 }

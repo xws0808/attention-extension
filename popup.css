@@ -1,8 +1,8 @@
 body {
   width: 300px;
-  padding: 16px;
-  font-family: Arial, sans-serif;
-  background: #1a1a1a;
+  padding: 18px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  background: #0f1410;
   color: white;
   margin: 0;
 }
@@ -11,79 +11,94 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 .header h1 {
   font-size: 16px;
   margin: 0;
+  font-weight: 700;
+  letter-spacing: -0.2px;
 }
 
 #level-badge {
-  background: #5865F2;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: bold;
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid #22c55e;
+  color: #22c55e;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
 }
 
 .stats-grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
 
 .stat-box {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  padding: 12px 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(34, 197, 94, 0.15);
+  border-radius: 10px;
+  padding: 14px 8px;
   text-align: center;
 }
 
 .stat-value {
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: #22c55e;
 }
 
 .stat-label {
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.6);
-  margin-top: 2px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.section {
+  margin-bottom: 18px;
 }
 
 .section h2 {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 8px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  font-weight: 600;
 }
 
 #weekly-chart {
   display: flex;
   align-items: flex-end;
   gap: 6px;
-  height: 80px;
+  height: 70px;
 }
 
 .day-bar {
   flex: 1;
-  background: #5865F2;
-  border-radius: 3px 3px 0 0;
-  min-height: 2px;
-  position: relative;
+  background: #22c55e;
+  border-radius: 4px 4px 0 0;
+  min-height: 3px;
 }
 
 .day-label {
   font-size: 9px;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.45);
   text-align: center;
-  margin-top: 4px;
+  margin-top: 5px;
 }
 
 #snooze-status {
   font-size: 12px;
   margin-bottom: 8px;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .snooze-buttons {
@@ -93,17 +108,19 @@ body {
 
 .snooze-buttons button, #resume-btn {
   flex: 1;
-  background: rgba(255, 255, 255, 0.08);
-  border: none;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(34, 197, 94, 0.2);
   color: white;
-  padding: 8px 6px;
-  border-radius: 6px;
+  padding: 9px 6px;
+  border-radius: 8px;
   font-size: 11px;
+  font-weight: 500;
   cursor: pointer;
+  transition: background 0.15s ease;
 }
 
 .snooze-buttons button:hover, #resume-btn:hover {
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(34, 197, 94, 0.15);
 }
 
 #resume-btn {
