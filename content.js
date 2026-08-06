@@ -1,5 +1,3 @@
-// Focus Coach - content script
-
 console.log("Focus Coach: content script loaded");
 
 let watchStartTime = null;
@@ -32,6 +30,24 @@ async function isSnoozed() {
   const result = await chrome.storage.local.get(["snooze"]);
   const snooze = result.snooze;
   return snooze && snooze.until && snooze.until > Date.now();
+}
+
+function disableAutoplay() {
+  const toggle = document.querySelector(".ytp-autonav-toggle-button");
+
+  if (!toggle) {
+    setTimeout(disableAutoplay, 1000);
+    return;
+  }
+
+  const isOn = toggle.getAttribute("aria-checked") === "true";
+
+  if (isOn) {
+    toggle.click();
+    console.log("Focus Coach: disabled YouTube's native autoplay");
+  } else {
+    console.log("Focus Coach: autoplay already off");
+  }
 }
 
 function createOverlay() {
@@ -249,15 +265,6 @@ function attachListeners(video) {
   });
 }
 
-let lastUrl = window.location.href;
-setInterval(() => {
-  if (window.location.href !== lastUrl) {
-    console.log("Focus Coach: navigated to new page/video");
-    endWatchSession("navigated away");
-    lastUrl = window.location.href;
-  }
-}, 1000);
-
 function fetchTarget() {
   chrome.runtime.sendMessage({ type: "GET_TARGET" }, (response) => {
     if (response && response.target) {
@@ -269,5 +276,16 @@ function fetchTarget() {
 
 document.addEventListener("click", handlePotentialSkipClick, true);
 
+let lastUrl = window.location.href;
+setInterval(() => {
+  if (window.location.href !== lastUrl) {
+    console.log("Focus Coach: navigated to new page/video");
+    endWatchSession("navigated away");
+    lastUrl = window.location.href;
+    disableAutoplay();
+  }
+}, 1000);
+
 fetchTarget();
 waitForVideo();
+disableAutoplay();
